@@ -1,7 +1,7 @@
 ## todo ()
 
 feature learning thru transversing methods 
-
+RNNs and LSTMs with graphs
 
 ## done
 

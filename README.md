@@ -2,8 +2,15 @@
 
 a collection of neural network and other architectures for graph feature represnetaion learning
 
+* 
 
-```python3
+notes
+======
+
+[1][notes/todo.md]
+
+
+```python
 
 cite = {'name': '@aissyfucker'
 

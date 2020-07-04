@@ -1,3 +1,4 @@
+import warnings
 import argparse
 from base_gattn import BaseGAttN
 import tensorflow as tf 
@@ -28,11 +29,23 @@ def dummy_vals(rng): # no labels requried
     return logits2x2, labels
 
 
+def forward(prob):
+    #implement alpha teleportation 
+
+    pass
+
 def flows(values):
     assert len(values) == 2
     logits,labels = values
     base = BaseGAttN 
-    return base.confmat(logits, labels)
+    confmat = tf.cast(base.confmat(logits, labels), dtype=tf.float64)
+    batched_confmat = []
+    for i in range(1, confmat.shape.ndims + 1):
+        forward = 0.5 + 1/np.arctan(i)*np.pi
+        
+        batched_confmat.append( confmat[i+int(forward)])
+
+    return batched_confmat
 
 
 def loss_on_iter(count):
@@ -40,7 +53,7 @@ def loss_on_iter(count):
     logit, labels = dummy_vals(args.range)
     losses = []
 
-    base.masked_softmax_cross_entropy(logit, labels, np.mean(losses))
+    #base.masked_softmax_cross_entropy(logit, labels, np.mean(losses))
     for _ in range(count):
         losses.append(base.loss(logit, labels, 0, 0.5))
 
@@ -51,13 +64,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--range', help='range', default=100, type=int)
 parser.add_argument('--count', help='count', default=3, type=int)
 args = parser.parse_args()
+tf.compat.v1.enable_eager_execution()
+dummpy_vals = '' #extract1_q, commns
+if dummy_vals(args.range):
+    values = dummy_vals(args.range)
+#with tf.compat.v1.enable_eager_execution():
 
 
-
-with tf.compat.v1.enable_eager_execution():
-    loss = loss_on_iter(args.count)
-    #confmat = flows(dummy_vals(args.range))
-    print(loss)
+print(flows(values))
+loss = loss_on_iter(args.count)
+#confmat = flows(dummy_vals(args.range))
+print(loss)
 
 
 
